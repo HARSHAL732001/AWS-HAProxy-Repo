@@ -1,0 +1,51 @@
+- hosts: AWSBackend
+  tasks:
+          - name: "Installing WebServer"
+            package:
+                    name: "httpd"
+            become: yes
+
+
+          - name: "Installing PHP"
+            package:
+                    name: "php"
+            become: yes
+   
+
+          - copy:
+                  dest: "/var/www/html/ip.php"
+                  src: "/root/ansible-ws/ip.php"
+            become: yes
+
+
+          - service:
+                  name: "httpd"
+                  state: restarted
+            become: yes
+
+
+- hosts: AWSLoadBalancer
+  tasks:
+          - name: "Installing Haproxy"
+            package:
+                    name: "haproxy"
+            become: yes
+
+          
+
+          - name: "Installing PHP"
+            package:
+                    name: "php"
+            become: yes
+
+          - template:
+                  dest: "/etc/haproxy/haproxy.cfg"
+                  src: "/root/ansible-ws/haproxy.cfg.j2"
+            become: yes
+
+          - service:
+                  name: "haproxy"
+                  state: restarted
+            become: yes
+
+
